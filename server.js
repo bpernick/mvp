@@ -3,10 +3,10 @@ const app = express ();
 const server = require('http').Server(app);
 const path = require('path');
 const io = require('socket.io')(server);
-const port = 80;
+const port = 3000;
 server.listen(port, console.log(`socket server listening on port ${port}`));
 
-app.use(express.static(path.join(__dirname, client, dist)))
+app.use(express.static(path.join(__dirname, 'dist')))
 
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
