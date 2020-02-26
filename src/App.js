@@ -6,13 +6,6 @@ export default class App extends React.Component {
     constructor () {
         super ();
     }
-    componentDidMount(){
-        // const io = socketIOClient(endpoint);
-        // io.on('connection', socket => {
-        //     socket.emit('hello', "HELLO WORLD");  
-        //   });
-        // io.on('news', (news) => { console.log(news) });
-    }
     onClick(){
         const socket = socketIOClient(endpoint);
         socket.emit('oof', 'OOOOF!!!')
