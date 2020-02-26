@@ -9,8 +9,10 @@ server.listen(port, console.log(`socket server listening on port ${port}`));
 app.use(express.static(path.join(__dirname, 'dist')))
 
 io.on('connection', function (socket) {
+  console.log('IO!!!')
   socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+  socket.on('oof', function (data) {
+    console.log(data)
+    socket.emit('oofRes',data)
   });
 });
