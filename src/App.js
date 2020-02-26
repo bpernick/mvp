@@ -8,7 +8,7 @@ export default class App extends React.Component {
     }
     onClick(){
         const socket = socketIOClient(endpoint);
-        socket.emit('oof', 'OOOOF!!!')
+        socket.emit('getBlackCards', 'oof')
         socket.on ('oofRes', ((res) => {console.log(res)}))
         socket.on ('news', ((res) => {console.log(res)}))
     }
