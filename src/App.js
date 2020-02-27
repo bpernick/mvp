@@ -1,7 +1,7 @@
 import React from 'react';
 import socketIOClient from "socket.io-client";
 import Deck from './Deck'
-import Score from './Score'
+import Scores from './Scores'
 import Czar from './Czar'
 import WhiteCards from './WhiteCards'
 import axios from 'axios'
@@ -12,7 +12,7 @@ export default class App extends React.Component {
 
     constructor () {
         super ();
-        this.state = {answers:[]};
+        this.state = {answers:[], scores:{}};
     }
     componentDidMount (){
         //on sign in, get deck and hand
@@ -21,8 +21,9 @@ export default class App extends React.Component {
             let deck = data.data.deck;
             let hand = data.data.hand;
             let czar = data.data.czar;
+            let scores = data.data.scores;
             let renderAnswers = czar === user;
-            this.setState({deck, hand, czar, renderAnswers})
+            this.setState({deck, hand, czar, renderAnswers, scores})
         })
 
         socket.on('popCard', (deck) => {
@@ -35,6 +36,7 @@ export default class App extends React.Component {
         })
         socket.on('winner', (response) => {
             let answers = [];
+            let scores = response.scores;
             let czar = response.czar;
             let renderAnswers = czar === user;
             let deck = response.deck
@@ -46,7 +48,7 @@ export default class App extends React.Component {
                 console.log('got new cards', cards)
                 let hand = this.state.hand;
                 hand = hand.concat(cards);
-                this.setState({answers, renderAnswers, czar, deck, hand})
+                this.setState({answers, renderAnswers, czar, deck, hand, scores})
             })
             .catch((err)=>{console.error(err)})
          })
@@ -73,7 +75,7 @@ export default class App extends React.Component {
         return (<div className = 'game-board'>
             <>{this.state.deck && <Deck card = {this.state.deck[0]} onClick = {this.drawBlackCard.bind(this)}/>}</>
             <>{this.state.czar &&<Czar czar = {this.state.czar} answers = {this.state.answers} renderAnswers = {this.state.renderAnswers} selectAnswer={this.selectAnswer.bind(this)}/>}</>
-            <Score/>
+            <Scores scores= {Object.entries(this.state.scores)}/>
             <>{this.state.hand &&<WhiteCards hand = {this.state.hand} submitAnswer = {this.submitAnswer.bind(this)} pick = {this.state.deck[0].pick}/>}</>
         </div>)
     }

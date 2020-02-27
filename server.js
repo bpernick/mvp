@@ -32,6 +32,7 @@ app.get('/init', (req,res) =>{
   data.deck = deck;
   data.hand = getCards.getWhiteCards(10);
   data.czar = players[czarIndex];
+  data.scores = scores;
   res.send(data)
 })
 
