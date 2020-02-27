@@ -72,11 +72,11 @@ export default class App extends React.Component {
     }
     render () {
         console.log(user)
-        return (<div className = 'game-board'>
+        return (<div className = 'outer'><div className = 'game-board'>
             <>{this.state.deck && <Deck card = {this.state.deck[0]} onClick = {this.drawBlackCard.bind(this)}/>}</>
             <>{this.state.czar &&<Czar czar = {this.state.czar} answers = {this.state.answers} renderAnswers = {this.state.renderAnswers} selectAnswer={this.selectAnswer.bind(this)}/>}</>
             <Scores scores= {Object.entries(this.state.scores)}/>
             <>{this.state.hand &&<WhiteCards hand = {this.state.hand} submitAnswer = {this.submitAnswer.bind(this)} pick = {this.state.deck[0].pick}/>}</>
-        </div>)
+        </div></div>)
     }
 }

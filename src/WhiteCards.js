@@ -16,6 +16,6 @@ export default class WhiteCards extends React.Component{
         }
     }
     render (){
-        return (<div>{this.props.hand.map((card, i) => (<div key ={i} onClick ={this.onClick.bind(this)}>{card}</div>))}</div>)
+        return (<div className = 'white-cards'>{this.props.hand.map((card, i) => (<div className = 'white-card' key ={i} onClick ={this.onClick.bind(this)}>{card}</div>))}</div>)
     }
 }
