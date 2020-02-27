@@ -18,10 +18,11 @@ export default class App extends React.Component {
         //on sign in, get deck and hand
         axios.get(`/init`, {params:{user}})
         .then ((data) => {
-            let deck = data.data.deck;
-            let hand = data.data.hand;
-            let czar = data.data.czar;
-            let scores = data.data.scores;
+            let {deck, hand, czar, scores} = data.data;
+            // let deck = data.data.deck;
+            // let hand = data.data.hand;
+            // let czar = data.data.czar;
+            // let scores = data.data.scores;
             let renderAnswers = czar === user;
             this.setState({deck, hand, czar, renderAnswers, scores})
         })
@@ -36,10 +37,11 @@ export default class App extends React.Component {
         })
         socket.on('winner', (response) => {
             let answers = [];
-            let scores = response.scores;
-            let czar = response.czar;
+            let {scores, czar, deck} = response;
+            // let scores = response.scores;
+            // let czar = response.czar;
+            // let deck = response.deck
             let renderAnswers = czar === user;
-            let deck = response.deck
             alert(`The winner is ${response.winner}! \n ${response.question} \n ${response.answer[0]}`)
             console.log('getting new cards')
             axios.get('/whiteCards', {params:{num: this.state.deck[0].pick}})

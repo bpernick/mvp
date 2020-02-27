@@ -52,15 +52,18 @@ io.on('connection', function (socket) {
     io.emit('getAnswers', answers)
   });
   socket.on('selectAnswer', (data) => {
+    answers = [];
+
     let question = deck[0].text;
     let answer = data.cards
     let winner = data.name
+
     scores[winner] += 1;
     deck.shift();
     czarIndex = (czarIndex + 1) % players.length;
     let czar = players[czarIndex];
-    answers = [];
     let response = {answer, winner, question, czar, deck, scores}
     io.emit(`winner`, response)
+    
   });
 });
