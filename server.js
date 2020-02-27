@@ -35,6 +35,12 @@ app.get('/init', (req,res) =>{
   res.send(data)
 })
 
+app.get('/whiteCards', (req, res) =>{
+  let num = req.query.num;
+  res.send(getCards.getWhiteCards(num))
+})
+
+
 io.on('connection', function (socket) {
   socket.on('drawBlackCard', () => {
     deck.shift();
@@ -43,5 +49,17 @@ io.on('connection', function (socket) {
   socket.on('submitAnswer', (answer) => {
     answers.push(answer);
     io.emit('getAnswers', answers)
+  });
+  socket.on('selectAnswer', (data) => {
+    let question = deck[0].text;
+    let answer = data.cards
+    let winner = data.name
+    scores[winner] += 1;
+    deck.shift();
+    czarIndex = (czarIndex + 1) % players.length;
+    let czar = players[czarIndex];
+    answers = [];
+    let response = {answer, winner, question, czar, deck, scores}
+    io.emit(`winner`, response)
   });
 });
