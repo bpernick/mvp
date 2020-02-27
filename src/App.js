@@ -19,10 +19,6 @@ export default class App extends React.Component {
         axios.get(`/init`, {params:{user}})
         .then ((data) => {
             let {deck, hand, czar, scores} = data.data;
-            // let deck = data.data.deck;
-            // let hand = data.data.hand;
-            // let czar = data.data.czar;
-            // let scores = data.data.scores;
             let renderAnswers = czar === user;
             this.setState({deck, hand, czar, renderAnswers, scores})
         })
@@ -38,9 +34,6 @@ export default class App extends React.Component {
         socket.on('winner', (response) => {
             let answers = [];
             let {scores, czar, deck} = response;
-            // let scores = response.scores;
-            // let czar = response.czar;
-            // let deck = response.deck
             let renderAnswers = czar === user;
             alert(`The winner is ${response.winner}! \n ${response.question} \n ${response.answer[0]}`)
             console.log('getting new cards')
