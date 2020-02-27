@@ -15,10 +15,11 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 //Global state
 let games = 0;
-let online = [];
+let online = {};
 
 //Game states
-let state = {};
+let state = {}
+
 
 
 // let deck = [];
@@ -29,21 +30,26 @@ let state = {};
 
 app.post('/online', (req, res) => {
   console.log('online',req.body.user);
-  online.push(req.body.user)
-  res.end();
+  online[req.body.user] = req.body.user
+  res.send(online);
 })
 
-app.post('/gameNum', (req, res)=>{
+app.post('/newgame', (req, res)=>{
+  req.body.players.forEach(player => {
+    delete online[player]
+  });
+  
   games ++;
+  let game = games;
   let newDeck = getCards.getBlackCards(90);
-  state[games] = {
+  state[game] = {
     deck: newDeck,
     players: [...req.body.players],
     czarIndex: 0,
     scores:{},
     answers: []
   }
-  res.send(games)
+  res.send({game})
 })
 
 app.get('/init', (req,res) =>{

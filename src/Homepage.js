@@ -14,23 +14,22 @@ export default class Homepage extends React.Component{
         console.log('user', this.state.user)
         this.props.handleNameInput(this.state.user);
         this.setState({user: ''})
-    }
-        
+    }  
     render (){
         return (<div>
             <h2>Cards Against Huge Manatees</h2>
             <label>my name:</label>
             <input value ={this.state.user} onChange = {this.onChange.bind(this)}></input>
             <button onClick = {this.onClick.bind(this)}></button>
-            {/* <div><h4>Online</h4>
-                <div>{this.props.online.map((name, i) => (<div key={i}>{name}</div>))}
+            <div><h4>Online</h4>
+                <div>{this.props.online.map((name, i) => (<div onClick = {this.props.choosePlayer} key={i}>{name}</div>))}
                 </div>
             </div>
             <div><h4>Create Game</h4>
                 <div>{this.props.selected.map((name, i) => (<div key={i}>{name}</div>))}
                 </div>
-                <button onClick = {this.newGame.bind(this)}>New Game!</button>
-            </div> */}
+                <button onClick = {this.props.newGame}>New Game!</button>
+            </div>
         </div>)
     }
 }
