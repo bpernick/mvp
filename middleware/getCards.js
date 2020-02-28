@@ -1,4 +1,4 @@
-const db = require('../database/jsonCards');
+const db = require('../database/pgCards');
 
 module.exports.getBlackCards = (num) => {
     const choices = db.blackCards;

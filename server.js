@@ -21,34 +21,6 @@ let online = {};
 let state = {}
 
 
-// app.post('/online', (req, res) => {
-//   console.log('online',req.body.user);
-//   online[req.body.user] = req.body.user
-//   res.send(online);
-// })
-
-// app.post('/newgame', (req, res)=>{
-//   req.body.players.forEach(player => {
-//     delete online[player]
-//   });
-
-//   games ++;
-//   let game = games + '';
-//   let newDeck = getCards.getBlackCards(90);
-//   state[game] = {
-//     deck: newDeck,
-//     players: [...req.body.players],
-//     czarIndex: 0,
-//     scores:{},
-//     answers: []
-//   }
-//   req.body.players.forEach( (player) =>{
-//     state[game].scores[player] = 0;
-//   })
-//   console.log('state', state)
-//   res.send({game})
-// })
-
 app.get('/init', (req,res) =>{
   console.log(req.query)
   let game = req.query.game;
@@ -79,7 +51,7 @@ socket.on('newgame', (players) => {
   console.log(players)
   games ++;
   let game = games + '';
-  let newDeck = getCards.getBlackCards(90);
+  let newDeck = getCards.getBlackCards(10);
   state[game] = {
     deck: newDeck,
     players: [...players],
