@@ -59,6 +59,7 @@ export default class App extends React.Component {
         socket.emit('drawBlackCard', this.props.game);
     }
     submitAnswer(cards){
+        alert (`answer submitted to the Czar!`)
         let hand = this.state.hand
         hand = hand.filter((card) => !(cards.includes(card)))
         this.setState({hand})
@@ -76,8 +77,9 @@ export default class App extends React.Component {
         // console.log(user)
         return (<div className = 'outer'><div className = 'game-board'>
             <>{this.state.deck && <Deck card = {this.state.deck[0]} onClick = {this.drawBlackCard.bind(this)}/>}</>
-            <>{this.state.czar &&<Czar czar = {this.state.czar} answers = {this.state.answers} renderAnswers = {this.state.renderAnswers} selectAnswer={this.selectAnswer.bind(this)}/>}</>
+            <>{this.state.czar &&<Czar user = {this.props.user} czar = {this.state.czar} answers = {this.state.answers} renderAnswers = {this.state.renderAnswers} selectAnswer={this.selectAnswer.bind(this)}/>}</>
             <Scores scores= {Object.entries(this.state.scores)}/>
+            <div></div>
             <>{this.state.hand &&<WhiteCards hand = {this.state.hand} submitAnswer = {this.submitAnswer.bind(this)} pick = {this.state.deck[0].pick}/>}</>
         </div></div>)
     }

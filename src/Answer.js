@@ -10,7 +10,7 @@ class Answer extends React.Component{
     }
     render(){
         return (<div>
-            {this.props.answer.cards.map( (card,i) => (<div key = {i} onClick = {this.onClick.bind(this)}>{card}</div>))}
+            {this.props.answer.cards.map( (card,i) => (<div className = {`answer`} key = {i} onClick = {this.onClick.bind(this)}>{card}</div>))}
         </div>)
         }
     }
