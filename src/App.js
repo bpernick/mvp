@@ -5,21 +5,23 @@ import Scores from './Scores'
 import Czar from './Czar'
 import WhiteCards from './WhiteCards'
 import axios from 'axios'
-const user = prompt('WHAT, is your name?', 'dinglefutz')
+// const user = prompt('WHAT, is your name?', 'dinglefutz')
 const endpoint = `/`
 const socket = socketIOClient(endpoint);
 export default class App extends React.Component {
 
-    constructor () {
-        super ();
+    constructor (props) {
+        super (props);
         this.state = {answers:[], scores:{}};
     }
     componentDidMount (){
+        let game = this.props.game;
+        socket.emit('joinRoom', game);
         //on sign in, get deck and hand
-        axios.get(`/init`, {params:{user}})
+        axios.get(`/init`, {params:{game}})
         .then ((data) => {
             let {deck, hand, czar, scores} = data.data;
-            let renderAnswers = czar === user;
+            let renderAnswers = czar === this.props.user;
             this.setState({deck, hand, czar, renderAnswers, scores})
         })
 
@@ -34,7 +36,7 @@ export default class App extends React.Component {
         socket.on('winner', (response) => {
             let answers = [];
             let {scores, czar, deck} = response;
-            let renderAnswers = czar === user;
+            let renderAnswers = czar === this.props.user;
             alert(`The winner is ${response.winner}! \n ${response.question} \n ${response.answer[0]}`)
             console.log('getting new cards')
             axios.get('/whiteCards', {params:{num: this.state.deck[0].pick}})
@@ -50,23 +52,24 @@ export default class App extends React.Component {
         }
 
     drawBlackCard (){
-        socket.emit('drawBlackCard');
+        socket.emit('drawBlackCard', this.props.game);
     }
     submitAnswer(cards){
         let hand = this.state.hand
         hand = hand.filter((card) => !(cards.includes(card)))
         this.setState({hand})
-        socket.emit('submitAnswer', {cards, user}) 
+        let game = this.props.game
+        socket.emit('submitAnswer', {cards, user:this.props.user, game}) 
     }
     selectAnswer(answer){
+        let game = this.props.game
         let name = answer.user
         let cards = answer.cards
-        console.log('answer', answer)
-        let winner = {cards, name}
+        let winner = {cards, name, game}
         socket.emit('selectAnswer', winner);
     }
     render () {
-        console.log(user)
+        // console.log(user)
         return (<div className = 'outer'><div className = 'game-board'>
             <>{this.state.deck && <Deck card = {this.state.deck[0]} onClick = {this.drawBlackCard.bind(this)}/>}</>
             <>{this.state.czar &&<Czar czar = {this.state.czar} answers = {this.state.answers} renderAnswers = {this.state.renderAnswers} selectAnswer={this.selectAnswer.bind(this)}/>}</>

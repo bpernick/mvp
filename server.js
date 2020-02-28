@@ -21,36 +21,33 @@ let online = {};
 let state = {}
 
 
+// app.post('/online', (req, res) => {
+//   console.log('online',req.body.user);
+//   online[req.body.user] = req.body.user
+//   res.send(online);
+// })
 
-// let deck = [];
-// let players = [];
-// let czarIndex = 0;
-// let scores = {};
-// let answers = [];
+// app.post('/newgame', (req, res)=>{
+//   req.body.players.forEach(player => {
+//     delete online[player]
+//   });
 
-app.post('/online', (req, res) => {
-  console.log('online',req.body.user);
-  online[req.body.user] = req.body.user
-  res.send(online);
-})
-
-app.post('/newgame', (req, res)=>{
-  req.body.players.forEach(player => {
-    delete online[player]
-  });
-  
-  games ++;
-  let game = games;
-  let newDeck = getCards.getBlackCards(90);
-  state[game] = {
-    deck: newDeck,
-    players: [...req.body.players],
-    czarIndex: 0,
-    scores:{},
-    answers: []
-  }
-  res.send({game})
-})
+//   games ++;
+//   let game = games + '';
+//   let newDeck = getCards.getBlackCards(90);
+//   state[game] = {
+//     deck: newDeck,
+//     players: [...req.body.players],
+//     czarIndex: 0,
+//     scores:{},
+//     answers: []
+//   }
+//   req.body.players.forEach( (player) =>{
+//     state[game].scores[player] = 0;
+//   })
+//   console.log('state', state)
+//   res.send({game})
+// })
 
 app.get('/init', (req,res) =>{
   console.log(req.query)
@@ -58,7 +55,7 @@ app.get('/init', (req,res) =>{
   let data ={};
   data.deck = state[game].deck;
   data.hand = getCards.getWhiteCards(8);
-  data.czar = state[game].players[czarIndex];
+  data.czar = state[game].players[state[game].czarIndex];
   data.scores = state[game].scores;
   res.send(data)
 })
@@ -70,29 +67,63 @@ app.get('/whiteCards', (req, res) =>{
 
 
 io.on('connection', function (socket) {
-  socket.on('drawBlackCard', () => {
-    console.log('draw card', socket.handshake.query)
-    let game = socket.handshake.query.game;
+
+socket.emit('resOnline', online)
+
+socket.on('online', (name) => {
+  online[name] = socket.id;
+  io.emit('resOnline', online)
+})
+
+socket.on('newgame', (players) => {
+  console.log(players)
+  games ++;
+  let game = games + '';
+  let newDeck = getCards.getBlackCards(90);
+  state[game] = {
+    deck: newDeck,
+    players: [...players],
+    czarIndex: 0,
+    scores:{},
+    answers: []
+  }
+
+  players.forEach( (player) =>{
+    state[game].scores[player] = 0;
+  })
+  players.forEach((player) => {
+    let id = online[player];
+    io.to(id).emit('createGame', game)
+  })
+  players.forEach(player => {
+    delete online[player]
+  });
+  io.emit('resOnline', online)
+})
+  socket.on('joinRoom', (room) => {
+    socket.join(room);
+  })
+  socket.on('drawBlackCard', (game) => {
     state[game].deck.shift();
-    io.emit('popCard', state[game].deck)
+    io.to(game).emit('popCard', state[game].deck)
   });
   socket.on('submitAnswer', (answer) => {
-    let game = socket.handshake.query.game;
+    let game = answer.game;
     state[game].answers.push(answer);
-    io.emit('getAnswers', state[game].answers)
-  });
+    io.to(game).emit('getAnswers', state[game].answers)
+  }); 
   socket.on('selectAnswer', (data) => {
-    let game = socket.handshake.query.game;
+    let game = data.game;
     state[game].answers = [];
-    let question = deck[0].text;
-    let answer = data.cards
-    let winner = data.name
+    let question = state[game].deck[0].text;
+    let answer = data.cards;
+    let winner = data.name;
 
     state[game].scores[winner] += 1;
     state[game].deck.shift();
     state[game].czarIndex = (state[game].czarIndex + 1) % state[game].players.length;
     let czar = state[game].players[state[game].czarIndex];
     let response = {answer, winner, question, czar, deck:state[game].deck, scores: state[game].scores}
-    io.emit(`winner`, response)
+    io.to(game).emit(`winner`, response)
   });
 });

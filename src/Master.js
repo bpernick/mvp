@@ -6,10 +6,6 @@ import socketIOClient from "socket.io-client";
 const endpoint = `/`
 const socket = socketIOClient(endpoint);
 
-//game
-//online
-//added to game
-//user
 export default class Master extends React.Component{
     constructor(){
         super();
@@ -18,13 +14,30 @@ export default class Master extends React.Component{
             selected:[]
         }
     }
+    componentDidMount (){
+        socket.on('createGame', (game) => {
+            console.log('make game')
+            this.setState({game})
+        })
+        socket.on('resOnline', (online) => {
+            this.setState({online:Object.keys(online)})
+        })
+        socket.on('offline', (player) =>{
+            let online = this.state.online.filter((user) =>{user !== player})
+            let selected = this.state.selected.filter((user) =>{user !== player})
+            console.log('reset', selected, online)
+            this.setState({selected, online})
+        })
+    }
+
     handleNameInput(user){
         this.setState({user});
-        axios.post('/online', {user})
-        .then((data) => {
-            console.log("online", data.data)
-            this.setState({online: Object.keys(data.data)})
-        })
+        socket.emit('online', user)
+        // axios.post('/online', {user})
+        // .then((data) => {
+        //     console.log("online", data.data)
+        //     this.setState({online: Object.keys(data.data)})
+        // })
     }
     choosePlayer(e){
         // console.log('I choose', e.target.innerText)
@@ -34,14 +47,16 @@ export default class Master extends React.Component{
     }
     newGame(){
         let players= this.state.selected;
-        console.log('players', players)
-        axios.post('/newgame', {players})
-        .then((data) =>{
-            let {game} = data.data;
-            this.setState({game})
-        })
+        
+        socket.emit('newgame', players)
+
+        // axios.post('/newgame', {players})
+        // .then((data) =>{
+        //     let {game} = data.data;
+        //     this.setState({game})
+        // })
     }
     render (){
-        return this.state.game ? (<App game ={this.state.game}/>):(<Homepage newGame = {this.newGame.bind(this)} choosePlayer = {this.choosePlayer.bind(this)} handleNameInput = {this.handleNameInput.bind(this)} online = {this.state.online} selected = {this.state.selected}/>);
+        return this.state.game ? (<App game ={this.state.game} user ={this.state.user}/>):(<Homepage newGame = {this.newGame.bind(this)} choosePlayer = {this.choosePlayer.bind(this)} handleNameInput = {this.handleNameInput.bind(this)} online = {this.state.online} selected = {this.state.selected}/>);
     }
 }
