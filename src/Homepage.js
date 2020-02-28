@@ -28,7 +28,7 @@ export default class Homepage extends React.Component{
             <div><h4>My Invites:</h4>
                 <div>{this.props.selected.map((name, i) => (<div key={i}>{name}</div>))}
                 </div>
-                <button onClick = {this.props.newGame}>New Game!</button>
+                <button className = 'new-game' onClick = {this.props.newGame}>New Game!</button>
             </div>
         </div>)
     }
