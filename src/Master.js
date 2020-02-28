@@ -40,11 +40,6 @@ export default class Master extends React.Component{
     handleNameInput(user){
         this.setState({user});
         socket.emit('online', user)
-        // axios.post('/online', {user})
-        // .then((data) => {
-        //     console.log("online", data.data)
-        //     this.setState({online: Object.keys(data.data)})
-        // })
     }
     choosePlayer(e){
         // console.log('I choose', e.target.innerText)
@@ -57,13 +52,9 @@ export default class Master extends React.Component{
         
         socket.emit('newgame', players)
 
-        // axios.post('/newgame', {players})
-        // .then((data) =>{
-        //     let {game} = data.data;
-        //     this.setState({game})
-        // })
+
     }
     render (){
-        return this.state.game ? (<App game ={this.state.game} user ={this.state.user}/>):(<Homepage newGame = {this.newGame.bind(this)} choosePlayer = {this.choosePlayer.bind(this)} handleNameInput = {this.handleNameInput.bind(this)} online = {this.state.online} selected = {this.state.selected}/>);
+        return this.state.game ? (<App game ={this.state.game} user ={this.state.user}/>):(<Homepage newGame = {this.newGame.bind(this)} choosePlayer = {this.choosePlayer.bind(this)} handleNameInput = {this.handleNameInput.bind(this)} online = {this.state.online} selected = {this.state.selected} user = {this.state.user}/>);
     }
 }

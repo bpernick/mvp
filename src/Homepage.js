@@ -16,16 +16,16 @@ export default class Homepage extends React.Component{
         this.setState({user: ''})
     }  
     render (){
-        return (<div>
-            <h2>Cards Against Huge Manatees</h2>
-            <label>my name:</label>
+        return (<div className = 'homepage'>
+            <h1>Cards Against Huge Manatees</h1>
+            <>{!this.props.user && <><label>WHAT is your name?</label>
             <input value ={this.state.user} onChange = {this.onChange.bind(this)}></input>
-            <button onClick = {this.onClick.bind(this)}></button>
-            <div><h4>Online</h4>
+            <button onClick = {this.onClick.bind(this)}>Submit</button></>}</>
+            <div><h4>Online Now:</h4>
                 <div>{this.props.online.map((name, i) => (<div onClick = {this.props.choosePlayer} key={i}>{name}</div>))}
                 </div>
             </div>
-            <div><h4>Create Game</h4>
+            <div><h4>My Invites:</h4>
                 <div>{this.props.selected.map((name, i) => (<div key={i}>{name}</div>))}
                 </div>
                 <button onClick = {this.props.newGame}>New Game!</button>
