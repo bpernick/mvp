@@ -19,6 +19,8 @@ export default class Master extends React.Component{
             console.log('make game')
             this.setState({game})
         })
+        
+
         socket.on('resOnline', (online) => {
             this.setState({online:Object.keys(online)})
         })

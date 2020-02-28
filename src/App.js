@@ -24,6 +24,10 @@ export default class App extends React.Component {
             let renderAnswers = czar === this.props.user;
             this.setState({deck, hand, czar, renderAnswers, scores})
         })
+        socket.on('resetGame', (score) => {
+            alert (`Game over!`)
+            // this.setState({game : null})
+        })
 
         socket.on('popCard', (deck) => {
             this.setState({deck})

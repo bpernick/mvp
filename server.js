@@ -72,12 +72,17 @@ socket.on('newgame', (players) => {
   });
   io.emit('resOnline', online)
 })
+
   socket.on('joinRoom', (room) => {
     socket.join(room);
   })
   socket.on('drawBlackCard', (game) => {
     state[game].deck.shift();
-    io.to(game).emit('popCard', state[game].deck)
+    if (state[game].deck.length){
+      io.to(game).emit('popCard', state[game].deck)
+    }else{
+      io.to(game).emit('resetGame', state[game].scores)
+    }
   });
   socket.on('submitAnswer', (answer) => {
     let game = answer.game;
