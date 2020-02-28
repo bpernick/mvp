@@ -21,8 +21,13 @@ export default class Master extends React.Component{
         })
         
 
-        socket.on('resOnline', (online) => {
-            this.setState({online:Object.keys(online)})
+        socket.on('resOnline', (obj) => {
+            let online = Object.keys (obj);
+            if (online.length < this.state.online.length){
+                this.setState({online, selected:[]})
+            } else {
+                this.setState({online})
+            }
         })
         socket.on('offline', (player) =>{
             let online = this.state.online.filter((user) =>{user !== player})
